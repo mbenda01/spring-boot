@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gestion-portefeuille-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portefeuille_db
+      POSTGRES_USER: portefeuille_user
+      POSTGRES_PASSWORD: portefeuille_pwd
+    ports:
+      - "5433:5432"
+    volumes:
+      - portefeuille_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portefeuille_user -d portefeuille_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  portefeuille_data:

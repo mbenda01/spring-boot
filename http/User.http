@@ -1,0 +1,61 @@
+@host = http://localhost:9091/api/users
+
+### Lister avec pagination
+GET {{host}}?page=0&size=10
+
+### Lister page 2
+GET {{host}}?page=1&size=5
+
+### Filtrer par nom
+GET {{host}}?nom=diop
+
+### Filtrer par email
+GET {{host}}?email=ndiaye
+
+### Filtre combiné
+GET {{host}}?nom=fatou&email=diallo
+
+### Récupérer 
+GET {{host}}/1
+
+### Identifiant 
+GET {{host}}/9999
+
+### Création 
+POST {{host}}
+Content-Type: application/json
+
+{
+  "nom": "Awa Gueye",
+  "email": "awa.gueye@email.com"
+}
+
+### Email déjà utilisé 
+POST {{host}}
+Content-Type: application/json
+
+{
+  "nom": "Doublon Test",
+  "email": "fatou.diallo@email.com"
+}
+
+### 
+POST {{host}}
+Content-Type: application/json
+
+{
+  "nom": "",
+  "email": ""
+}
+
+### Email mal formé
+POST {{host}}
+Content-Type: application/json
+
+{
+  "nom": "Test Format",
+  "email": "pas-un-email"
+}
+
+### Taille de page hors bornes 
+GET {{host}}?page=0&size=500

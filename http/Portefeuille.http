@@ -1,0 +1,64 @@
+@host = http://localhost:9091/api/wallets
+
+### Lister avec pagination
+GET {{host}}?page=0&size=10
+
+### Filtrer par devise
+GET {{host}}?devise=XOF
+
+### Filtrer par utilisateur
+GET {{host}}?utilisateurId=1
+
+### Filtre combiné
+GET {{host}}?utilisateurId=1&devise=XOF
+
+### Consulter un portefeuille
+GET {{host}}/1
+
+### Portefeuille inexistant : attendu 404
+GET {{host}}/9999
+
+### Création valide : attendu 201, solde à 0
+POST {{host}}
+Content-Type: application/json
+
+{
+  "utilisateurId": 1,
+  "devise": "XOF"
+}
+
+### Doublon utilisateur + devise : attendu 400
+POST {{host}}
+Content-Type: application/json
+
+{
+  "utilisateurId": 1,
+  "devise": "XOF"
+}
+
+### Utilisateur inexistant : attendu 400
+POST {{host}}
+Content-Type: application/json
+
+{
+  "utilisateurId": 9999,
+  "devise": "EUR"
+}
+
+### Devise inconnue : attendu 400
+POST {{host}}
+Content-Type: application/json
+
+{
+  "utilisateurId": 2,
+  "devise": "GBP"
+}
+
+### Champs manquants : attendu 400 avec deux erreurs
+POST {{host}}
+Content-Type: application/json
+
+{}
+
+### Devise invalide en paramètre : attendu 400
+GET {{host}}?devise=GBP
