@@ -24,6 +24,9 @@ public class Utilisateur {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
+    @Column(name = "mot_de_passe", nullable = false)
+    private String motDePasse;
+
     @Column(name = "date_creation", nullable = false, updatable = false)
     private LocalDateTime dateCreation;
 

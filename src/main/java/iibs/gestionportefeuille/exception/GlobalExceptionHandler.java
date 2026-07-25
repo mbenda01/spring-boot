@@ -55,6 +55,11 @@ public class GlobalExceptionHandler {
         return construire(HttpStatus.NOT_FOUND, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(IdentifiantsInvalidesException.class)
+    public ResponseEntity<ErreurResponse> gererIdentifiants(IdentifiantsInvalidesException ex) {
+        return construire(HttpStatus.UNAUTHORIZED, ex.getMessage(), null);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErreurResponse> gererIntegrite(DataIntegrityViolationException ex) {
         return construire(HttpStatus.CONFLICT,
