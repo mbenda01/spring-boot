@@ -3,37 +3,32 @@ package iibs.gestionportefeuille.service.mapper;
 import iibs.gestionportefeuille.controller.dto.*;
 import iibs.gestionportefeuille.entity.*;
 import iibs.gestionportefeuille.entity.enums.Devise;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-@Component
-public class PortefeuilleMapper {
+@Mapper(componentModel = "spring")
+public interface PortefeuilleMapper {
 
-    public Portefeuille versEntite(PortefeuilleCreationDto dto, Utilisateur utilisateur) {
-        Portefeuille portefeuille = new Portefeuille();
-        portefeuille.setUtilisateur(utilisateur);
-        portefeuille.setDevise(dto.devise());
-        portefeuille.setSolde(BigDecimal.ZERO);
-        return portefeuille;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreation", ignore = true)
+    @Mapping(target = "solde", expression = "java(java.math.BigDecimal.ZERO)")
+    @Mapping(target = "devise", source = "dto.devise")
+    @Mapping(target = "utilisateur", source = "utilisateur")
+    Portefeuille versEntite(PortefeuilleCreationDto dto, Utilisateur utilisateur);
 
-    public PortefeuilleResponseDto versReponse(Portefeuille portefeuille) {
-        return PortefeuilleResponseDto.builder()
-                .id(portefeuille.getId())
-                .utilisateurId(portefeuille.getUtilisateur().getId())
-                .nomUtilisateur(portefeuille.getUtilisateur().getNom())
-                .solde(portefeuille.getSolde())
-                .soldeFormate(formater(portefeuille.getSolde(), portefeuille.getDevise()))
-                .devise(portefeuille.getDevise())
-                .libelleDevise(portefeuille.getDevise().getLibelle())
-                .dateCreation(portefeuille.getDateCreation())
-                .build();
-    }
+    @Mapping(target = "utilisateurId", source = "utilisateur.id")
+    @Mapping(target = "nomUtilisateur", source = "utilisateur.nom")
+    @Mapping(target = "libelleDevise", expression = "java(portefeuille.getDevise().getLibelle())")
+    @Mapping(target = "soldeFormate",
+             expression = "java(formater(portefeuille.getSolde(), portefeuille.getDevise()))")
+    PortefeuilleResponseDto versReponse(Portefeuille portefeuille);
 
-    private String formater(BigDecimal montant, Devise devise) {
+    default String formater(BigDecimal montant, Devise devise) {
         if (montant == null || devise == null) {
             return null;
         }

@@ -7,11 +7,10 @@ import iibs.gestionportefeuille.repository.UtilisateurRepository;
 import iibs.gestionportefeuille.service.UserService;
 import iibs.gestionportefeuille.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +36,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> lister(String nom, String email, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("nom").ascending());
-
+    public Page<UserResponseDto> lister(String nom, String email, Pageable pageable) {
         return utilisateurRepository.rechercher(nettoyer(nom), nettoyer(email), pageable)
-                .stream()
-                .map(userMapper::versReponse)
-                .toList();
+                .map(userMapper::versReponse);
     }
 
     private String nettoyer(String valeur) {

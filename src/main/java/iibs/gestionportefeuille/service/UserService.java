@@ -1,8 +1,8 @@
 package iibs.gestionportefeuille.service;
 
 import iibs.gestionportefeuille.controller.dto.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -10,5 +10,5 @@ public interface UserService {
 
     UserResponseDto trouverParId(Long id);
 
-    List<UserResponseDto> lister(String nom, String email, int page, int size);
+    Page<UserResponseDto> lister(String nom, String email, Pageable pageable);
 }

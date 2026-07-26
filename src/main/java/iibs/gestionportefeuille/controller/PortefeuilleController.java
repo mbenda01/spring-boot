@@ -4,20 +4,20 @@ import iibs.gestionportefeuille.controller.dto.*;
 import iibs.gestionportefeuille.entity.enums.Devise;
 import iibs.gestionportefeuille.service.PortefeuilleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
-@Validated
 @Tag(name = "Portefeuilles", description = "Gestion des portefeuilles")
 public class PortefeuilleController {
 
@@ -38,19 +38,11 @@ public class PortefeuilleController {
 
     @Operation(summary = "Lister les portefeuilles avec pagination et filtres")
     @GetMapping
-    public ResponseEntity<List<PortefeuilleResponseDto>> lister(
-            @RequestParam(required = false) Long utilisateurId,
-            @RequestParam(required = false) Devise devise,
+    public ResponseEntity<Page<PortefeuilleResponseDto>> lister(
+            @Parameter(description = "Filtre sur l'identifiant de l'utilisateur") @RequestParam(required = false) Long utilisateurId,
+            @Parameter(description = "Filtre sur la devise") @RequestParam(required = false) Devise devise,
+            @PageableDefault(size = 10, sort = "dateCreation", direction = Sort.Direction.DESC) Pageable pageable) {
 
-            @RequestParam(defaultValue = "0")
-            @Min(value = 0, message = "Le numéro de page ne peut être négatif")
-            int page,
-
-            @RequestParam(defaultValue = "10")
-            @Min(value = 1, message = "La taille de page doit valoir au moins 1")
-            @Max(value = 100, message = "La taille de page ne peut dépasser 100")
-            int size) {
-
-        return ResponseEntity.ok(portefeuilleService.lister(utilisateurId, devise, page, size));
+        return ResponseEntity.ok(portefeuilleService.lister(utilisateurId, devise, pageable));
     }
 }

@@ -2,8 +2,8 @@ package iibs.gestionportefeuille.service;
 
 import iibs.gestionportefeuille.controller.dto.*;
 import iibs.gestionportefeuille.entity.enums.Devise;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PortefeuilleService {
 
@@ -11,5 +11,5 @@ public interface PortefeuilleService {
 
     PortefeuilleResponseDto trouverParId(Long id);
 
-    List<PortefeuilleResponseDto> lister(Long utilisateurId, Devise devise, int page, int size);
+    Page<PortefeuilleResponseDto> lister(Long utilisateurId, Devise devise, Pageable pageable);
 }
