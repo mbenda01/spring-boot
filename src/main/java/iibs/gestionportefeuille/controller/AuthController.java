@@ -12,20 +12,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentification", description = "Enregistrement et connexion (JWT)")
+@Tag(name = "Authentification", description = "Enregistrement, connexion et rafraîchissement (JWT)")
 public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "Créer un compte et recevoir un token")
+    @Operation(summary = "Créer un compte et recevoir les tokens")
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> enregistrer(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.enregistrer(request));
     }
 
-    @Operation(summary = "Se connecter et recevoir un token")
+    @Operation(summary = "Se connecter et recevoir les tokens")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> connecter(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.connecter(request));
+    }
+
+    @Operation(summary = "Obtenir un nouveau token d'accès via le refresh token")
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> rafraichir(@Valid @RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(authService.rafraichir(request));
     }
 }

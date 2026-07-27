@@ -4,7 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record AuthResponse(
-        String token,
+        String accessToken,
+        String refreshToken,
         String type,
         Long id,
         String nom,

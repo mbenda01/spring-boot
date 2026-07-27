@@ -17,15 +17,27 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
-    private long expirationMs;
+    @Value("${jwt.access-expiration}")
+    private long accessExpirationMs;
 
-    public String genererToken(UserDetails userDetails) {
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpirationMs;
+
+    public String genererAccessToken(UserDetails userDetails) {
+        return genererToken(userDetails.getUsername(), accessExpirationMs, "access");
+    }
+
+    public String genererRefreshToken(UserDetails userDetails) {
+        return genererToken(userDetails.getUsername(), refreshExpirationMs, "refresh");
+    }
+
+    private String genererToken(String email, long dureeMs, String type) {
         Date maintenant = new Date();
-        Date expiration = new Date(maintenant.getTime() + expirationMs);
+        Date expiration = new Date(maintenant.getTime() + dureeMs);
 
         return Jwts.builder()
-                .subject(userDetails.getUsername())
+                .subject(email)
+                .claim("type", type)
                 .issuedAt(maintenant)
                 .expiration(expiration)
                 .signWith(cle())
@@ -36,9 +48,17 @@ public class JwtService {
         return extraire(token, Claims::getSubject);
     }
 
+    public String extraireType(String token) {
+        return extraire(token, claims -> claims.get("type", String.class));
+    }
+
     public boolean estValide(String token, UserDetails userDetails) {
         String email = extraireEmail(token);
         return email.equals(userDetails.getUsername()) && !estExpire(token);
+    }
+
+    public boolean estRefreshValide(String token) {
+        return "refresh".equals(extraireType(token)) && !estExpire(token);
     }
 
     private boolean estExpire(String token) {
