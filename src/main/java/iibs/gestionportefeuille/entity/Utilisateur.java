@@ -1,5 +1,6 @@
 package iibs.gestionportefeuille.entity;
 
+import iibs.gestionportefeuille.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,10 @@ public class Utilisateur {
     @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Role role;
+
     @Column(name = "date_creation", nullable = false, updatable = false)
     private LocalDateTime dateCreation;
 
@@ -34,6 +39,9 @@ public class Utilisateur {
     protected void prePersist() {
         if (this.dateCreation == null) {
             this.dateCreation = LocalDateTime.now();
+        }
+        if (this.role == null) {
+            this.role = Role.CLIENT;
         }
     }
 }

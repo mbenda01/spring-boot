@@ -2,6 +2,7 @@ package iibs.gestionportefeuille.security;
 
 import iibs.gestionportefeuille.entity.Utilisateur;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class UtilisateurDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + utilisateur.getRole().name()));
     }
 
     @Override
@@ -34,23 +35,17 @@ public class UtilisateurDetails implements UserDetails {
         return utilisateur.getEmail();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
+    @Override public boolean isAccountNonExpired() { 
         return true;
     }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
+    @Override public boolean isAccountNonLocked() {
+        return true; 
     }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+    @Override public boolean isCredentialsNonExpired() {
+        return true; 
     }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    @Override public boolean isEnabled() { 
+        return true; 
     }
 }
+

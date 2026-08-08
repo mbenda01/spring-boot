@@ -85,4 +85,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(statut).body(corps);
     }
+    @ExceptionHandler(AccesRefuseException.class)
+    public ResponseEntity<ErreurResponse> gererAccesRefuse(AccesRefuseException ex) {
+        return construire(HttpStatus.FORBIDDEN, ex.getMessage(), null);
+    }
 }
